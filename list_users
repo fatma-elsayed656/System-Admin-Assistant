@@ -1,0 +1,30 @@
+#!/bin/bash
+#About : Script to List users in the system
+
+#print no. of lines in /etc/passwd
+awk 'END { print "Number of Users are " NR }' /etc/passwd >ls-u
+printf "=%.0s"  $(seq 1 70) >>ls-u
+printf "\n" >>ls-u
+
+# print header
+printf "%0s  %5s  %20s  %25s\n" "UID"  "User Name"  "Home Dir" "Shell" >>ls-u
+# print separator
+printf "=%.0s"  $(seq 1 70) >>ls-u
+# insert a newline
+printf "\n" >>ls-u
+
+awk  'BEGIN { FS=":" ; OFS="    " } {print $3,$1,$6,$7}' /etc/passwd | column -t  >>ls-u
+
+
+
+
+
+whiptail --title "List Users" --yesno "$(cat ls-u)" --scrolltext --yes-button "main menu" --no-button "exit" --fullbuttons 30 80
+
+if [ $? == 0 ]
+then
+	source ./main-menu
+elif [ $? == 1 ]
+then
+	exit
+fi

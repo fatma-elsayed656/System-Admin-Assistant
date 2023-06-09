@@ -1,0 +1,71 @@
+#!/bin/bash
+#About - Change password for exist user
+
+# Check if the user has root privilage
+if [ $(id -u) -eq 0 ]; then
+
+while true; do
+user=$(whiptail --inputbox "Please Enter Username you want to Change Password for" 10 40 --title "Change Password" 3>&1 1>&2 2>&3)
+        if [ $? == 1 ];then     #return to main menu again if cancel pressed
+                source ./main-menu
+        fi
+check=$(getent passwd $user | cut -d ":" -f1)
+
+if [ "$check" == "$user" ]; then    #check if user exists
+        break
+elif [ -z "$user" ]; then
+        if whiptail --title "Error" --yesno "Empty username, Do you want to try again ?" \
+         --yes-button "try again" --no-button "exit" 8 78; then
+                continue
+        else
+            	exit
+        fi
+else
+    	if whiptail --title "Error" --yesno "This User Name doesn't exist, Do you want to try again ?" \
+         --yes-button "try again" --no-button "exit" 8 78; then
+                continue
+        else
+                exit
+        fi
+fi
+done
+
+
+while true; do
+                pass1=$(whiptail --title "SET PASSWORD" --passwordbox "Choose a strong password" 8 78 3>&1 1>&2 2>&3)
+                if [ $? == 1 ]; then
+			 break
+		fi
+		if [ -z "$pass1" ]; then
+			if whiptail --title "Warning" --yesno "You Entered empty password, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                                break
+                        fi
+		fi
+                pass2=$(whiptail --title "Confirm PASSWORD" --passwordbox "Enter your password Again " 8 78 3>&1 1>&2 2>&3)
+                if [ "$pass1" == "$pass2" ]; then
+                        echo "$pass1" | passwd "$user" --stdin
+                        whiptail --title "Confirmation" --msgbox "Password Changed succesfully" 8 78
+                        break
+                else
+                        if whiptail --title "Error" --yesno "You Entered unmatched passwords, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                            	break
+                        fi
+                fi
+done
+else
+    	whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+        exit
+fi
+
+#check if user want to exit or return to main menu
+if whiptail --yesno "Do you want to Return to main menu ?" --title "option" --yes-button "main menu" --no-button "Exit" 10 30; then
+        source ./main-menu
+else
+        exit
+fi

@@ -1,0 +1,56 @@
+#!/bin/bash
+#main menu
+
+
+
+option=$(whiptail --title "System Admin Assistant V1.0" --menu "Please Choose an option" --fullbuttons --cancel-button "Exit" 30 80 20 \
+"List Users" "List all users on the system" \
+"List Groups" "List all groups on the system" \
+"Add User" "Add a user to the system" \
+"Change Password" "Change Password for an existing user" \
+"Add Group" "Add a group to the system" \
+"Modify User" "Modify an existing user" \
+"Modify Group" "Modify a group and its list of members" \
+"Delete User" "Delete a user from the system" \
+"Delete Group" "Delete a group from the system" \
+"About" "Information About System Admin Assistant Program"  3>&1 1>&2 2>&3)
+if [ $? == 1 ]; then
+	exit
+fi
+##########################
+
+if [ "$option" == "Add User" ]
+then
+	source ./add_user
+elif [ "$option" == "Add Group" ]
+then
+	source ./add_group
+elif [ "$option" == "List Users" ]
+then
+        source ./list_users
+elif [ "$option" == "List Groups" ]
+then
+        source ./list_groups
+elif [ "$option" == "Modify User" ]
+then
+	source ./mod_user
+elif [ "$option" == "Modify Group" ]
+then
+        source ./mod_group
+elif [ "$option" == "Delete User" ]
+then
+        source ./del_user
+elif [ "$option" == "Delete Group" ]
+then
+        source ./del_group
+elif [ "$option" == "Change Password" ]
+then
+    	source ./chnge_pass
+elif [ "$option" == "About" ]
+then
+    	whiptail --title "About" --textbox about.txt  --scrolltext  20 80
+	if [ $? == 0 ]; then
+		source ./main-menu
+	fi
+fi
+

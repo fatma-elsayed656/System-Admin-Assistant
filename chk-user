@@ -1,0 +1,29 @@
+#!/bin/bash
+
+
+while true; do
+user=$(whiptail --inputbox "Please Enter Username you want to Modify" 10 40 --title "Modify User" 3>&1 1>&2 2>&3)
+       if [ $? == 1 ];then     #return to modify menu again if cancel pressed
+               source ./mod_user
+       fi
+check=$(getent passwd $user | cut -d ":" -f1)
+
+if [ "$check" == "$user" ]; then    #check if user exists
+        break
+elif [ -z "$user" ]; then
+        if whiptail --title "Error" --yesno "Empty username, Do you want to try again ?" \
+         --yes-button "try again" --no-button "exit" 8 78; then
+                continue
+        else
+            	exit
+        fi
+else
+    	if whiptail --title "Error" --yesno "This User Name doesn't exist, Do you want to try again ?" \
+         --yes-button "try again" --no-button "exit" 8 78; then
+                continue
+        else
+                exit
+        fi
+fi
+done
+

@@ -1,0 +1,48 @@
+#!/bin/bash
+# Author - Fatma Elsayed
+#About - Script to add user to the system
+
+
+# Check if the user has root privilage
+if [ $(id -u) -eq 0 ]; then
+	while true; do
+	user=$(whiptail --inputbox "Please Enter Username you want to add :" 10 40 --title "Add User" 3>&1 1>&2 2>&3)
+	if [ $? == 1 ]; then source ./main-menu; fi
+	check=$(getent passwd $user | cut -d ":" -f1)     #check if username exists
+
+	if [ "$check" == "$user" ]
+	then
+		if whiptail --title "Warning" --yesno "This User $user already exists! , Do you want to try again ?" \
+		 --yes-button "try again" --no-button "exit" 10 30; then
+			continue
+		else
+			break
+		fi
+
+	elif [ -z "$user" ]   #check if the entered value = 0
+	then
+		if whiptail --title "Error" --yesno "Empty username, Do you want to try again ?" \
+		 --yes-button "try again" --no-button "exit" 8 78; then
+			continue
+		else
+			break
+		fi
+	else
+		useradd -m  $user
+                whiptail --title "Add User Confirmation" --msgbox "User $user has been added to the system successfully" 10 30
+		break
+	fi
+	done
+else
+	whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+
+	exit
+fi
+
+#check if user want to exit or return to main menu
+if whiptail --yesno "Do you want to Return to main menu ?" --title "option" --yes-button "main menu" --no-button "Exit" 10 30; then
+	source ./main-menu
+else
+	exit
+fi
+

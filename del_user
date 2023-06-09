@@ -1,0 +1,58 @@
+#!/bin/bash
+#About - Script to Delete User from the system
+
+if [ $(id -u) -eq 0 ]; then
+
+        while true; do
+        user=$(whiptail --inputbox "Please Enter Username you want to Delete :" 10 40 --title "Delete User" 3>&1 1>&2 2>&3)
+        check=$(getent passwd $user | cut -d ":" -f1)
+
+        if [ -z "$user" ]
+        then
+            	if whiptail --title "Error" --yesno "Empty username, Do you want to try again ?" \
+                 --yes-button "try again" --no-button "exit" 8 78; then
+                        continue
+                else
+                    	break
+                fi
+
+	elif [ "$check" != "$user" ]  #check if the user does not exist
+        then
+                if whiptail --title "Warning" --yesno "This User $user does not exist ,Do you want to try again ? !" \
+                 --yes-button "try again" --no-button "exit" 10 30; then
+                        continue
+                else
+                        break
+                fi
+
+
+        else
+		if whiptail --yesno "Are you sure you want to delete user < $user > !" --title "Warning" 10 30;then
+                	if whiptail --yesno "Do you want to delete user's Home dir ?" --title "Warning" 10 30; then
+				userdel -rf  "$user"
+				whiptail --title "Delete User Confirmation" \
+                                 --msgbox "User $user Deleted with Home dir from the system successfully" 10 30
+				break
+			else
+				userdel -f "$user"
+				whiptail --title "Delete User Confirmation" \
+				 --msgbox "User $user Deleted without Home dir from the system successfully" 10 30
+				break
+			fi
+		else
+			break
+		fi
+        fi
+	done
+else
+    	whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+        exit
+fi
+
+
+#check if user want to exit or return to main menu
+if whiptail --yesno "Do you want to Return to main menu ?" --title "option" --yes-button "main menu" --no-button "Exit" 10 30; then
+        source ./main-menu
+else
+        exit
+fi

@@ -1,0 +1,54 @@
+#!/bin/bash
+#Delete Group
+
+if [ $(id -u) -eq 0 ]; then
+
+        while true; do
+        group=$(whiptail --inputbox "Please Enter Group Name you want to Delete :" 10 40 \
+         --title "Delete Group" 3>&1 1>&2 2>&3)
+        check=$(getent group $group | cut -d ":" -f1)
+
+        if [ -z "$group" ]
+        then
+            	if whiptail --title "Error" --yesno "Empty Group Name, Do you want to try again ?" \
+                 --yes-button "try again" --no-button "exit" 8 78; then
+                        continue
+                else
+                    	break
+                fi
+
+	elif [ "$check" != "$group" ]
+        then
+            	if whiptail --title "Warning" --yesno "This Group $group does not exist ,Do you want to try again ? !" \
+                 --yes-button "try again" --no-button "exit" 10 30; then
+                        continue
+                else
+                    	break
+                fi
+
+
+        else
+            	if whiptail --yesno "Are you sure you want to delete Group < $group > !" --title "Warning" 10 30;then
+			groupdel "$group"
+			whiptail --title "Delete Group Confirmation" \
+                                 --msgbox "Group $group Deleted from the system successfully" 10 30
+			break
+		else
+			break
+		fi
+        fi
+	done
+else
+    	whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+
+        exit
+fi
+
+#check if user want to exit or return to main menu
+if whiptail --yesno "Do you want to Return to main menu ?" --title "option" --yes-button "main menu" --no-button "Exit" 10 30; then
+        source ./main-menu
+else
+    	exit
+fi
+
+

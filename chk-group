@@ -1,0 +1,30 @@
+#!/bin/bash
+#Check if group exit or not
+
+
+while true; do
+group=$(whiptail --inputbox "Please Enter Group Name you want to Modify" 10 40 --title "Modify Group" 3>&1 1>&2 2>&3)
+       if [ $? == 1 ];then     #return to modify menu again if cancel pressed
+               source ./mod_group
+       fi
+check=$(getent group $group | cut -d ":" -f1)
+
+if [ "$check" == "$group" ]; then    #check if group exists
+        break
+elif [ -z "$group" ]; then
+        if whiptail --title "Error" --yesno "Empty group name, Do you want to try again ?" \
+         --yes-button "try again" --no-button "exit" 8 78; then
+                continue
+        else
+            	exit
+        fi
+else
+    	if whiptail --title "Error" --yesno "This Group Name doesn't exist, Do you want to try again ?" \
+         --yes-button "try again" --no-button "exit" 8 78; then
+                continue
+        else
+            	exit
+        fi
+fi
+done
+

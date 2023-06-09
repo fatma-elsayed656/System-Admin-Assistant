@@ -1,0 +1,101 @@
+#!/bin/bash
+#Modify Group
+
+
+# Check if the user has root privilage
+if [ $(id -u) -eq 0 ]; then
+
+
+option=$(whiptail --title "Modify Group Menu" --menu "Please Choose an option to modify Group" --fullbuttons --cancel-button "Exit" \
+30 80 20 \
+"<< Back" "Return to Main Menu" \
+"Group Name" "change the name to NEW_GROUP" \
+"Append Users" "append the users mentioned" \
+"GID" "change the group ID to new GID" 3>&1 1>&2 2>&3)
+
+#____________________________________________________Option 1 : Group Name____________________________________________________________________#
+
+if [ "$option" == "Group Name" ];then
+	source ./chk-group
+	while true; do
+                grp=$(whiptail --inputbox "Enter a new name:" 8 78 "$check" --title "Modify User Options" 3>&1 1>&2 2>&3)
+                if [ "$grp" == "$(getent group $grp | cut -d ":" -f1)" ]; then
+                        if whiptail --title "Warning" --yesno "This group name exists or no Change, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                                break
+                        fi
+                elif [ -z "$usr" ]; then
+                        if whiptail --title "Error" --yesno "Empty Group Name, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                            	break
+                        fi
+
+                else
+                    	groupmod -n "$grb" "$group"
+                        whiptail --title "Confirmation" --msgbox "Group Name Updated succesfully" 8 78
+                        break
+                fi
+        done
+
+#____________________________________________________Option 2 : Append Users____________________________________________________________________#
+
+elif [ "$option" == "Append Users" ];then
+		source ./chk-group
+		members=$(awk -F: -v GROUP="$group" '{if ($1 == GROUP) print $4}' /etc/group)
+		list=$(whiptail --inputbox "Enter user name you want to Append to group "$group" [comma seperated]:" 8 78 "$members" \
+                  --title "Modify User Options" 3>&1 1>&2 2>&3)
+		for user in $($members | tr "," " "); do
+			if [ "$user" != $($members | cut -d "," -f1) ]; then
+				whiptail whiptail --title "Error" --msgbox "The "$user" user does not exist, try again." 8 79
+				continue
+			fi
+		done
+				groupmod -a -U "$list" "$group"
+#____________________________________________________Option 3 : Modify GID___________________________________________________________________#
+
+elif [ "$option" == "GID" ];then
+        source ./chk-group
+        while true; do
+		p1=$(getent group $group | cut -d ":" -f3)
+                gid=$(whiptail --inputbox "Enter a new gid " 8 78 "$p1" --title "Modify User Options" 3>&1 1>&2 2>&3)
+                if [ "$gid" == "$(getent group $gid | cut -d ":" -f3)" ]; then
+                        if whiptail --title "Warning" --yesno "This GID Exists, Do you want to try another one ?" \
+                         --yes-button "try" --no-button "exit" 8 78; then
+                                continue
+                        else
+                            	break
+                        fi
+
+                else
+                        groupmod -g "$gid" "$group"
+                        whiptail --title "Error" --msgbox "UID Updated succesfully" 8 78
+                        break
+                fi
+        done
+#____________________________________________________Option 0 : Main Menu___________________________________________________________________#
+
+elif [ "$option" == "<< Back" ];then
+        source ./main-menu
+
+fi
+
+#____________________________________________________________________________________________________________________________________________#
+
+else
+    	whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+
+        exit
+fi
+
+
+
+#check if user want to exit or return to main menu
+if whiptail --yesno "Do you want to Return to Modify User Menu ?" --title "option" --no-button "Exit" 10 30; then
+        source ./mod_group
+else
+    	exit
+fi

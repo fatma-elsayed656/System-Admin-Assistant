@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#print no. of lines in /etc/group
+awk 'END { print "Number of Groups are " NR }' /etc/group >ls-g
+printf "=%.0s"  $(seq 1 40) >>ls-g
+printf "\n" >>ls-g
+
+# print header
+printf "%0s  %5s  %15s\n" "GID"  "Group Name"  "Users" >>ls-g
+# print separator
+printf "=%.0s"  $(seq 1 40) >>ls-g
+# insert a newline
+printf "\n" >>ls-g
+
+awk  'BEGIN { FS=":" ; OFS="	" } {print $3,$1,$4}' /etc/group | column -t  >>ls-g
+
+
+
+#getent group | awk -F: '{ print $1}' >>ls-g
+
+
+whiptail --title "List Groups" --yesno "$(cat ls-g)" --scrolltext --yes-button "main menu" --no-button "exit" --fullbuttons 30 60
+
+if [ $? == 0 ]
+then
+    	source ./main-menu
+elif [ $? == 1 ]
+then
+	exit
+fi
+

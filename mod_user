@@ -1,0 +1,225 @@
+#!/bin/bash
+#About - Script to Modify User
+
+
+# Check if the user has root privilage
+if [ $(id -u) -eq 0 ]; then
+
+
+option=$(whiptail --title "Modify User Menu" --menu "Please Choose an option to modify  a user" --fullbuttons --cancel-button "Exit" \
+30 80 20 \
+"<< Back" "Return To Main Menu" \
+"User Name" "Change Login name for the user" \
+"Comment" "Change value of the GECOS field" \
+"Change Password" "Change password for the user" \
+"Shell" "new login shell for the user account" \
+"UID" "new UID for the user account" \
+"Lock" "lock the user account" \
+"UnLock" "unlock the user account" \
+"GID" "force use GROUP as new primary group" \
+"Expire Date" "set account expiration date" \
+"Home Dir" "move contents of the home directory to the new location" 3>&1 1>&2 2>&3)
+
+
+#____________________________________________________Option 1 : User Name____________________________________________________________________#
+
+if [ "$option" == "User Name" ];then
+	source ./chk-user
+	while true; do
+		usr=$(whiptail --inputbox "Enter a new name:" 8 78 "$check" --title "Modify User Options" 3>&1 1>&2 2>&3)
+		if [ "$user" == "$(getent passwd $usr | cut -d ":" -f1)" ]; then
+			if whiptail --title "Warning" --yesno "This user name exists or no Change, Do you want to try again ?" \
+			 --yes-button "try again" --no-button "exit" 8 78; then
+				continue
+			else
+				break
+			fi
+		elif [ -z "$usr" ]; then
+			if whiptail --title "Error" --yesno "Empty User Name, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                                break
+                        fi
+
+		else
+	                usermod -l "$usr" "$user"
+        	        whiptail --title "Confirmation" --msgbox "User Name Updated succesfully" 8 78
+			break
+		fi
+	done
+#____________________________________________________Option 2 : ADD Comment__________________________________________________________________#
+
+elif [ "$option" == "Comment" ];then
+	source ./chk-user
+	while true; do
+                p1=$(getent passwd $user | cut -d ":" -f5)
+	        comment=$(whiptail --inputbox "Enter a Comment or Full Name or Email :" 8 78 "$p1" --title "Add Gecos" 3>&1 1>&2 2>&3)
+                if [ "$p1" == "$comment" ]; then
+                        if whiptail --title "Warning" --yesno "No Change, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                                break
+                        fi
+                else
+                        usermod -c "$comment" "$user"
+	                whiptail --title "Confirmation" --msgbox "Comment added succesfully" 8 78
+                        break
+                fi
+        done
+#____________________________________________________Option 3 : Change Password______________________________________________________________#
+
+elif [ "$option" == "Change Password" ];then
+	source ./chk-user
+	while true; do
+		pass1=$(whiptail --title "SET PASSWORD" --passwordbox "Choose a strong password" 8 78 3>&1 1>&2 2>&3)
+		if [ -z "$pass1" ]; then continue; fi
+		pass2=$(whiptail --title "Confirm PASSWORD" --passwordbox "Enter your password Again " 8 78 3>&1 1>&2 2>&3)
+		if [ "$pass1" == "$pass2" ]; then
+			echo "$pass1" | passwd "$user" --stdin
+			whiptail --title "Confirmation" --msgbox "Password Changed succesfully" 8 78
+		        break
+		else
+			if whiptail --title "Error" --yesno "You Entered unmatched passwords, Do you want to try again ?" \
+			 --yes-button "try again" --no-button "exit" 8 78; then
+				continue
+			else
+				break
+			fi
+		fi
+	done
+#____________________________________________________Option 4 : Default Shell________________________________________________________________#
+
+elif [ "$option" == "Shell" ];then
+	source ./chk-user
+	while true; do
+	p2=$(getent passwd $user | cut -d ":" -f7)
+	shell=$(whiptail --inputbox "Enter The Shell Path :" 8 78 "$p2" --title "Modify User <"$Options">" 3>&1 1>&2 2>&3)
+	if [ "$p2" == "$shell" ];then
+                if whiptail --title "Error" --yesno "no change, Do you want to try again ?" \
+		 --yes-button "try again" --no-button "exit" 8 78; then
+			continue
+		else
+			break
+		fi
+        else
+            	usermod -s "$shell" "$user"
+                whiptail --title "Error" --msgbox "New Shell added succesfully" 8 78
+		break
+        fi
+	done
+
+#____________________________________________________Option 5 : Modify UID___________________________________________________________________#
+
+elif [ "$option" == "UID" ];then
+	source ./chk-user
+	while true; do
+		p3=$(getent passwd $user | cut -d ":" -f3)
+                uid=$(whiptail --inputbox "Enter a new uid 'number > 1000' " 8 78 "$p3" --title "Modify User Options" 3>&1 1>&2 2>&3)
+                if [ "$uid" == "$(getent passwd $uid | cut -d ":" -f3)" ]; then
+                        if whiptail --title "Warning" --yesno "This UID Exists, Do you want to try another one ?" \
+                 	 --yes-button "try" --no-button "exit" 8 78; then
+                        	continue
+	                else
+        	                break
+                	fi
+
+                else
+                        usermod -u "$uid" "$user"
+                        whiptail --title "Error" --msgbox "UID Updated succesfully" 8 78
+                        break
+                fi
+	done
+#____________________________________________________Option 6 : Lock User____________________________________________________________________#
+
+elif [ "$option" == "Lock" ];then
+	source ./chk-user
+	if whiptail --title "Warning" --yesno "Are you sure you want to < Lock > this user < "$user" >!" 10 45; then
+		usermod -L "$user"
+                whiptail --title "Error" --msgbox "User < "$user" > Locked succesfully" 8 78
+        else
+                source ./test
+        fi
+#____________________________________________________Option 7 : UNLock User__________________________________________________________________#
+
+elif [ "$option" == "UnLock" ];then
+	source ./chk-user
+	if whiptail --title "Warning" --yesno "Are you sure you want to < UNLock > this user < "$user" >!" 10 45; then
+		usermod -U "$user"
+		whiptail --title "Error" --msgbox "User < "$user" > UNLocked succesfully" 8 78
+	else
+		source ./test
+	fi
+#____________________________________________________Option 8 : GID__________________________________________________________________________#
+
+elif [ "$option" == "GID" ];then
+	source ./chk-user
+	while true; do
+                gid=$(whiptail --inputbox "Enter a new gid" 8 78 "$p4" --title "Modify User Options" 3>&1 1>&2 2>&3)
+                if [ "$gid" == "$(getent group $gid | cut -d ":" -f3)" ];
+                then
+			usermod -g "$gid" "$user"
+                        whiptail --title "Error" --msgbox "added succesfully" 8 78
+                        break
+
+                else
+                        if whiptail --title "Warning" --yesno "This GID doesn't exist, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                                break
+                        fi
+                fi
+	done
+#____________________________________________________Option 9 : Expire Date_________________________________________________________________#
+
+elif [ "$option" == "Expire Date" ];then
+	source ./chk-user
+	exp=$(whiptail --inputbox "Enter the Expire Date (YYYY-MM-DD):" 8 39  --title "Modify User Options"  3>&1 1>&2 2>&3)
+	usermod -e "$exp" "$user"
+	whiptail --title "Error" --msgbox "Expiration Date added succesfully" 8 78
+#____________________________________________________Option 10 : Home Directory________________________________________________________________#
+
+elif [ "$option" == "Home Dir" ];then
+	source ./chk-user
+	while true; do
+	p5=$(getent passwd $user | cut -d ":" -f6)
+        dir=$(whiptail --inputbox "Enter a Comment/Full Name:" 8 78 "$p5" --title "Modify User Options" 3>&1 1>&2 2>&3)
+        if [ "$p5" == "$dir" ];then
+                if whiptail --title "Warning" --yesno "No Change, Do you want to try again ?" \
+                         --yes-button "try again" --no-button "exit" 8 78; then
+                                continue
+                        else
+                                break
+                        fi
+
+        else
+                usermod -dm "$dir" "$user"
+                whiptail --title "Error" --msgbox "added succesfully" 8 78
+		break
+        fi
+	done
+#____________________________________________________Option 11 : Main Menu___________________________________________________________________#
+
+elif [ "$option" == "<< Back" ];then
+	source ./main-menu
+
+fi
+
+#____________________________________________________________________________________________________________________________________________#
+
+else
+    	whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+
+        exit
+fi
+
+
+#check if user want to exit or return to main menu
+if whiptail --yesno "Do you want to Return to Modify User Menu ?" --title "option" --no-button "Exit" 10 30; then
+        source ./mod_user
+else
+    	exit
+fi
+
