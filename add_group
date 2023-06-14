@@ -35,7 +35,7 @@ then
         fi
 	done
 else
-        whiptail --title "Warning !" --msgbox "Only root may add a user to the system." 10 30
+        whiptail --title "Warning !" --msgbox "Only root may add a group to the system." 10 30
 fi
 
 
