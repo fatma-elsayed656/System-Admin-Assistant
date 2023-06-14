@@ -1,7 +1,8 @@
 #!/bin/bash
 #main menu
 
-
+# Check if the user has root privilage
+if [ $(id -u) -eq 0 ]; then
 
 option=$(whiptail --title "System Admin Assistant V1.0" --menu "Please Choose an option" --fullbuttons --cancel-button "Exit" 30 80 20 \
 "List Users" "List all users on the system" \
@@ -54,3 +55,9 @@ then
 	fi
 fi
 
+
+else
+	whiptail --title "Warning !" --msgbox "Only root may run the program." 10 30
+
+	exit
+fi
