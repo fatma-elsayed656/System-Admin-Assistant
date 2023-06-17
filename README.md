@@ -32,12 +32,13 @@ This program helps System Admin perform Tasks like :
 ## Instructions
  :warning:**Warning** : You need to Run the program with root user or user have root privilege using `sudo`
  
- <div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/349559d9-1e5b-4875-8220-bd1ba15ea26b"> </div>
+ ![root privilege](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/e42920b2-5fb3-40a9-85dc-d51c9a67fd8a)
 
 ### Main Menu 
 **Main Menu** displays options available to System Admin
 
- <div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/017ea1fe-7acf-467f-9b4f-e240c632e8f3"> </div>
+ ![main menu](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/c293ed72-fc6d-4862-b472-1acfab7ad677)
+
 
 ### List Users
 **List Users** option will list all users in the system
@@ -52,43 +53,52 @@ from `/etc/passwd` file ( UID ,username ,Directory and default Shell).
 >printf "\n"
 > ```
 
- <div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/572d7ff8-9b3a-40f2-b068-926416cafb1b"> </div>
+ ![list users](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/d865db67-aa1c-43bb-90ee-852570259809)
+
 
  ### List Groups
  **List Groups** option will list all groups in the system from `/etc/group`file (GID ,groupname and users in the group)
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/185e5a2e-3fc5-4e60-aa7d-1d4646c21232"> </div>
+![list groups](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/da3119fe-14ef-420c-be96-a433cb7ae1a8)
+
 
 ### Add User
 **Add User** Option will ask system admin for new username and check if it exists ,then add the username using `useradd` command
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/af44eafc-15bc-42eb-82b1-8a10382ee83d"> </div>
+![add user](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/42dcf0f4-f571-4905-bcc7-4cd7fdda27d0)
+
 
 ### Add Group
 **Add Group** Option will ask system admin for new group name and check if it exists ,then add the group name using `groupadd` command
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/0ba89162-a09a-498a-91b0-4670195b2270"> </div>
+
+![add group](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/2b4ff855-b6bf-4960-aa90-b90cc6e288a2)
 
 ### Modify User
 **Modify User** Option will display menu contain options to modify existing user using  `usermod`
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/40c015d6-f505-4376-a57a-41f6a23d498a"> </div>
+![modify user](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/d51e3300-1b36-4a3c-b98c-1d1e92914498)
+
 
 ### Modify Group
 **Modify Group** Option will display menu contain options to modify existing group using  `groupmod`
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/e23d3f7d-61e3-4827-a5dc-f319f028c900"> </div>
+![modify group](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/4cd7473e-5292-48ca-bd4e-cc6f12d955de)
+
 
 ### Delete User
 **Delete User** Option will ask system admin for username check if exists , then ask the admin to choose delete user with Home Directory or not using `userdel`
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/8b077847-d79e-4d97-b056-c77a2d4cfd2b"> </div>
+![delete user](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/b252be04-d241-48b9-b4dc-698d64525863)
+
 
 ### Delete Group
 **Delete Group** Option will ask system admin for group name check if exists , then ask the admin to confirm deletion using `groupdel`
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/83f91ac7-b299-49ed-a1fd-08380e8490e4"> </div>
+![delete group](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/703cccc0-1e8c-4acf-9d4c-1f329b19e94e)
+
 
 ### Change Password
 **Change Password** option will ask system admin to change password for existing user using `passwd`
 
-<div> <img src="https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/17092283-6949-449a-aecd-d72941ed7ab5"> </div>
+![change password](https://github.com/fatma-elsayed656/System-Admin-Assistant/assets/135543396/5100048f-1066-4278-b38c-e21a29e29296)
+
